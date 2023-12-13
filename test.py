@@ -196,6 +196,7 @@ def music_hasaki():
     tray_thread.start()
 
     while True:
+        print(1)
         current_time = datetime.datetime.now().time().strftime("%H:%M:%S")
         if str(current_time) in a:
             advertisement()
