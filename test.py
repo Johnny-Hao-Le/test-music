@@ -65,14 +65,16 @@ def hasaki_ringtone():
         # data = json.loads(req)[0]
     
         i = 0
-        cap = cv2.VideoCapture("rtsp://viennh:viennh11@113.161.33.107:555/cam/realmonitor?channel=3&subtype=0")
-        r_box = requests.post("https://ai.hasaki.vn/control/check_light_is_on/getTask?IP=113.161.33.107&port=555&C=3").content.decode('utf-8')
+        cap = cv2.VideoCapture("rtsp://viennh:viennh11@113.161.33.107:555/cam/realmonitor?channel=&subtype=0")
+        r_box = requests.post("https://ai.hasaki.vn/control/check_light_is_on/getTask?IP=113.161.33.107&port=555&C=").content.decode('utf-8')
         data_box_load = json.loads(r_box)
         data_box = data_box_load['json_list'][0]['PARAMS']['points']
         polygon = cv2.convexHull(np.array(data_box))
 
         while True:
+            
             ret, frame = cap.read()
+            print(frame)
             if not ret:
                 break
             i += 1
@@ -210,4 +212,6 @@ def music_hasaki():
 
 if __name__ == "__main__":
     threading.Thread(target=hasaki_ringtone).start()
-    threading.Thread(target=music_hasaki).start()
+
+        
+    #threading.Thread(target=music_hasaki).start()
