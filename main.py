@@ -9,7 +9,9 @@ import datetime
 import vlc
 import sys
 import public_ip as ip
-
+import cv2
+import numpy
+import onnxruntime
 
 from io import BytesIO
 from pystray import MenuItem as item
