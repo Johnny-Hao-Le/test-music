@@ -1,7 +1,6 @@
 import requests
 import time
 import json
-import public_ip as ip
 import pygame
 import pystray
 import os
@@ -17,8 +16,9 @@ from win11toast import toast
 
 
 
-location = ip.get()
-#location = '14.241.238.138'
+#location = ip.get()
+location = '14.241.238.138'
+
 
 def hasaki_ringtone():
     os.environ["OMP_NUM_THREADS"]= '1'
@@ -26,6 +26,7 @@ def hasaki_ringtone():
     import cv2
     from yolov8 import YOLOv8
     import numpy as np
+   
 
     def download_file(mp3_url, path_file):
         response = requests.get(mp3_url)
@@ -44,21 +45,14 @@ def hasaki_ringtone():
             time.sleep(1)
 
         pygame.mixer.quit()
-
-        
     def is_point_inside_polygon(point, polygon):
         x, y = point
         result = cv2.pointPolygonTest(polygon, (x, y), False)
         return result > 0
-    
-
     def detect(frame, polygon):
         boxes, scores, class_ids = yolov8_detector(frame)
         filtered_boxes = [box for box in boxes if is_point_inside_polygon(((box[0] + box[2]) // 2, (box[1] + box[3]) // 2), polygon)]
         return filtered_boxes, scores, class_ids
-    
-
-
     try:
         model_url = "https://tenant03-io-api.app.rdhasaki.com/hasaki-voice/model.onnx"
         download_file(model_url, "model.onnx")
@@ -66,41 +60,37 @@ def hasaki_ringtone():
         mp3_url = "https://tenant03-io-api.app.rdhasaki.com/hasaki-voice/hasakixinchao1.mp3"
         download_file(mp3_url, "hasakixinchao1.mp3")
         
-        url_channel = f'https://getchannel.app.rdhasaki.com/{location}'
-        req = requests.get(url_channel).content.decode('utf-8')
-        data_location = json.loads(req)[0]
-        if location == data_location.get('locate'):
-            port = data_location.get('port')
-            channel = data_location.get('channel')
-            
-            i = 0
-            cap = cv2.VideoCapture(f"rtsp://viennh:viennh11@{location}:{port}/cam/realmonitor?channel={channel}&subtype=0")
-            r_box = requests.post(f"https://ai.hasaki.vn/control/check_light_is_on/getTask?IP={location}&port={port}&C={channel}").content.decode('utf-8')
-            data_box_load = json.loads(r_box)
-            data_box = data_box_load['json_list'][0]['PARAMS']['points']
-            polygon = cv2.convexHull(np.array(data_box))
+        # url_channel = f'https://getchannel.app.rdhasaki.com/{location}'
+        # req = requests.get(url_channel).content.decode('utf-8')
+        # data = json.loads(req)[0]
+    
+        i = 0
+        cap = cv2.VideoCapture("rtsp://viennh:viennh11@113.161.33.107:555/cam/realmonitor?channel=&subtype=0")
+        r_box = requests.post("https://ai.hasaki.vn/control/check_light_is_on/getTask?IP=113.161.33.107&port=555&C=").content.decode('utf-8')
+        data_box_load = json.loads(r_box)
+        data_box = data_box_load['json_list'][0]['PARAMS']['points']
+        polygon = cv2.convexHull(np.array(data_box))
 
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    break
-                i += 1
-                if i % 5 == 0:
-                    boxes, scores, class_ids = detect(frame, polygon)
-                    if boxes:
-                        play_mp3("hasakixinchao1.mp3")
-                        time.sleep(30)   
-
-        elif location == '123.30.249.178':
-            toast('Không thể phát Hasaki Ringtone', 'Đang sử dụng VPN. Hãy tắt VPN và thử lại.')
-            os._exit(0)
-            
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            i += 1
+            if i % 5 == 0:
+                boxes, scores, class_ids = detect(frame, polygon)
+                
+                if boxes:
+                    for score in scores:
+                        if score > 0.83:
+                            play_mp3("hasakixinchao1.mp3")   
+                            
+                
     
         
     except Exception as e:
         toast('Không thể phát Hasaki Ringtone', 'Kiểm tra lại Internet.')
         os._exit(0)
-        
+        time.sleep(5)
    
 def music_hasaki():
     api_url = f"https://wshr.hasaki.vn/api/hr/music/songs/current-file?category_id=1&ip={location}"
@@ -205,12 +195,13 @@ def music_hasaki():
     tray_thread = threading.Thread(target=icontray)
     tray_thread.start()
 
-    while not range_time:
+    while True:
         current_time = datetime.datetime.now().time().strftime("%H:%M:%S")
         if str(current_time) in a:
             advertisement()
         else:
-            try:        
+            try: 
+                      
                 music_stream()
             except:
                 time.sleep(5)
@@ -218,6 +209,5 @@ def music_hasaki():
                 continue
 
 if __name__ == "__main__":
-    
     threading.Thread(target=hasaki_ringtone).start()
     threading.Thread(target=music_hasaki).start()
