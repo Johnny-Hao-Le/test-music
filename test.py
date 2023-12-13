@@ -66,7 +66,7 @@ def hasaki_ringtone():
     
         i = 0
         cap = cv2.VideoCapture("rtsp://viennh:viennh11@113.161.33.107:555/cam/realmonitor?channel=3&subtype=0")
-        r_box = requests.post("https://ai.hasaki.vn/control/check_light_is_on/getTask?IP=113.161.33.107&port=555&C=3").content.decode('utf-8')
+        r_box = requests.post("https://ai.hasaki.vn/control/check_light_is_on/getTask?IP=113.161.33.107&port=555&C=").content.decode('utf-8')
         data_box_load = json.loads(r_box)
         data_box = data_box_load['json_list'][0]['PARAMS']['points']
         polygon = cv2.convexHull(np.array(data_box))
@@ -83,7 +83,7 @@ def hasaki_ringtone():
                     for score in scores:
                         if score > 0.83:
                             play_mp3("hasakixinchao1.mp3")   
-                            print(1)
+                            
                 
     
         
@@ -194,13 +194,13 @@ def music_hasaki():
     tray_thread = threading.Thread(target=icontray)
     tray_thread.start()
 
-    while True:
-        print(1)
+    while not range_time:
         current_time = datetime.datetime.now().time().strftime("%H:%M:%S")
         if str(current_time) in a:
             advertisement()
         else:
-            try:        
+            try: 
+                      
                 music_stream()
             except:
                 time.sleep(5)
