@@ -195,7 +195,7 @@ def music_hasaki():
     tray_thread = threading.Thread(target=icontray)
     tray_thread.start()
 
-    while not range_time:
+    while True:
         current_time = datetime.datetime.now().time().strftime("%H:%M:%S")
         if str(current_time) in a:
             advertisement()

