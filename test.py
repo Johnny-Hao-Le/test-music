@@ -65,7 +65,7 @@ def hasaki_ringtone():
         # data = json.loads(req)[0]
     
         i = 0
-        cap = cv2.VideoCapture("rtsp://viennh:viennh11@113.161.33.107:555/cam/realmonitor?channel=3&subtype=0")
+        cap = cv2.VideoCapture("rtsp://viennh:viennh11@113.161.33.107:555/cam/realmonitor?channel=&subtype=0")
         r_box = requests.post("https://ai.hasaki.vn/control/check_light_is_on/getTask?IP=113.161.33.107&port=555&C=").content.decode('utf-8')
         data_box_load = json.loads(r_box)
         data_box = data_box_load['json_list'][0]['PARAMS']['points']
@@ -89,6 +89,7 @@ def hasaki_ringtone():
         
     except Exception as e:
         toast('Không thể phát Hasaki Ringtone', 'Kiểm tra lại Internet.')
+        os._exit(0)
         time.sleep(5)
    
 def music_hasaki():
