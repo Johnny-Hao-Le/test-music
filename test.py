@@ -1,7 +1,6 @@
 import requests
 import time
 import json
-import public_ip as ip
 import pygame
 import pystray
 import os
